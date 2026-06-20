@@ -9,7 +9,7 @@
             <h1 class="text-3xl text-white mb-5">
               Kami siap membantu <u class="hero-underline">UMKM</u> Untuk
               <br />
-              Untuk memulai & <u class="hero-underline">mendanai</u> <br />
+              Untuk memulai &amp; <u class="hero-underline">mendanai</u> <br />
               kebutuhan mereka
             </h1>
             <p class="text-white text-lg font-light mb-8">
@@ -29,6 +29,7 @@
         </div>
       </div>
     </section>
+
     <section class="container mx-auto pt-24" id="features">
       <div class="flex justify-between items-center mb-10">
         <div class="w-auto">
@@ -81,6 +82,7 @@
         </div>
       </div>
     </section>
+
     <section class="container mx-auto pt-24" id="projects">
       <div class="flex justify-between items-center">
         <div class="w-auto">
@@ -89,13 +91,9 @@
             Anda Investasikan
           </h2>
         </div>
-        <div class="w-auto mt-5">
-          <a class="text-gray-900 hover:underline text-md font-medium" href=""
-            >View All</a
-          >
-        </div>
       </div>
-      <div class="grid grid-cols-3 gap-4 mt-3">
+
+      <div v-if="campaigns.data && campaigns.data.length > 0" class="grid grid-cols-3 gap-4 mt-3">
         <div
           v-for="campaign in campaigns.data"
           :key="campaign.id"
@@ -104,48 +102,35 @@
           <div class="item">
             <figure class="item-image">
               <img
-                :src="$axios.defaults.baseURL + '/' + campaign.image_url"
+                :src="campaign.image_url || '/placeholder.png'"
                 alt=""
-                class="rounded-20 w-full"
+                class="rounded-20 w-full object-cover h-48"
               />
             </figure>
             <div class="item-meta">
               <h4 class="text-3xl font-medium text-gray-900 mt-5">
                 {{ campaign.nama }}
               </h4>
-              <p class="text-md font-light text-gray-900 h-12">
+              <p class="text-md font-light text-gray-900 h-12 overflow-hidden">
                 {{ campaign.short_description }}
               </p>
               <div class="relative pt-4 progress-bar">
-                <div
-                  class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200 h-3 rounded-lg"
-                >
+                <div class="overflow-hidden h-3 mb-4 text-xs flex rounded-lg bg-gray-200">
                   <div
-                    :style="
-                      'width: ' +
-                      (campaign.current_amount / campaign.goal_amount) * 100 +
-                      '%'
-                    "
+                    :style="'width: ' + progressPercent(campaign) + '%'"
                     class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-progress progress-striped"
                   ></div>
                 </div>
               </div>
               <div class="flex progress-info">
-                <div>
-                  {{ (campaign.current_amount / campaign.goal_amount) * 100 }}%
-                </div>
+                <div>{{ progressPercent(campaign) }}%</div>
                 <div class="ml-auto font-semibold">
-                  Rp {{ new Intl.NumberFormat().format(campaign.goal_amount) }}
+                  Rp {{ new Intl.NumberFormat('id-ID').format(campaign.goal_amount) }}
                 </div>
               </div>
             </div>
             <button
-              @click="
-                $router.push({
-                  name: 'projects-id',
-                  params: { id: campaign.id },
-                })
-              "
+              @click="$router.push({ name: 'projects-id', params: { id: campaign.id } })"
               class="mt-5 button-cta block w-full bg-orange-button hover:bg-green-button text-white font-semibold px-6 py-2 text-lg rounded-full"
             >
               Danai UMKM Ini
@@ -153,7 +138,15 @@
           </div>
         </div>
       </div>
+
+      <div v-else class="flex flex-col items-center justify-center py-20 text-gray-400">
+        <svg class="w-16 h-16 mb-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <p class="text-xl">Belum ada kampanye tersedia.</p>
+      </div>
     </section>
+
     <section class="container mx-auto pt-24" id="testimonials">
       <div class="flex justify-between items-center">
         <div class="w-auto">
@@ -170,35 +163,22 @@
         <div class="w-8/12 mt-16">
           <h2 class="text-3xl text-gray-900 font-light">
             "Investasi di website UMKM ini sangat mudah dan nyaman.
-            Hanya perlu mencari ide, klik dan sudah mendanai. ”
+            Hanya perlu mencari ide, klik dan sudah mendanai."
           </h2>
           <div class="testimonial-info mt-8">
             <div class="name text-xl font-semibold">Adit</div>
-            <div class="title text-xl font-light text-gray-400">
-              Investor
-            </div>
+            <div class="title text-xl font-light text-gray-400">Investor</div>
           </div>
           <div class="testimonial-icon mt-10">
-            <img
-              src="/mom.png"
-              alt=""
-              class="w-20 mr-5 inline-block testimonial-user rounded-full"
-            />
-            <img
-              src="/girl.png"
-              alt=""
-              class="w-20 mr-5 inline-block testimonial-user rounded-full"
-            />
-            <img
-              src="/boy.png"
-              alt=""
-              class="w-20 mr-5 inline-block testimonial-user active rounded-full"
-            />
+            <img src="/mom.png" alt="" class="w-20 mr-5 inline-block testimonial-user rounded-full" />
+            <img src="/girl.png" alt="" class="w-20 mr-5 inline-block testimonial-user rounded-full" />
+            <img src="/boy.png" alt="" class="w-20 mr-5 inline-block testimonial-user active rounded-full" />
           </div>
         </div>
         <div class="w-2/12"></div>
       </div>
     </section>
+
     <div class="cta-clip -mt-20"></div>
     <CallToAction />
     <Footer />
@@ -208,8 +188,21 @@
 <script>
 export default {
   async asyncData({ $axios }) {
-    const campaigns = await $axios.$get('/api/v1/campaigns')
-    return { campaigns }
+    try {
+      const campaigns = await $axios.$get('/api/v1/campaigns')
+      return { campaigns }
+    } catch (e) {
+      return { campaigns: { data: [] } }
+    }
+  },
+  methods: {
+    progressPercent(campaign) {
+      if (!campaign.goal_amount || campaign.goal_amount === 0) return 0
+      return Math.min(
+        Math.round((campaign.current_amount / campaign.goal_amount) * 100),
+        100
+      )
+    },
   },
 }
 </script>
