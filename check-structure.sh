@@ -1,27 +1,30 @@
-#!/bin/bash
-# Quick folder structure check
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "✅ Checking UMKM Frontend Folder Structure..."
-echo ""
+required_dirs=(app/assets app/components app/constants app/layouts app/middleware app/pages app/plugins app/services app/store app/utils public)
 
-echo "📂 Core Folders:"
-ls -1d assets components layouts pages plugins static store 2>/dev/null | sed 's/^/  ✓ /'
+for directory in "${required_dirs[@]}"; do
+  if [[ ! -d "$directory" ]]; then
+    printf 'Missing required directory: %s\n' "$directory" >&2
+    exit 1
+  fi
+done
 
-echo ""
-echo "📂 Organization Folders (NEW):"
-ls -1d constants helpers services utils 2>/dev/null | sed 's/^/  ✓ /'
+for file in nuxt.config.js package.json README.md; do
+  if [[ ! -f "$file" ]]; then
+    printf 'Missing required file: %s\n' "$file" >&2
+    exit 1
+  fi
+done
 
-echo ""
-echo "📂 Config Folders:"
-ls -1d middleware 2>/dev/null | sed 's/^/  ✓ /'
+if [[ -d static || -d assets || -d components || -d pages ]]; then
+  printf 'Move application source folders into app/ and public assets into public/.\n' >&2
+  exit 1
+fi
 
-echo ""
-echo "📄 Key Files:"
-ls -1 nuxt.config.js jsconfig.json .env 2>/dev/null | sed 's/^/  ✓ /'
+if ! grep -Fq "srcDir: 'app/'" nuxt.config.js || ! grep -Fq "static: '../public'" nuxt.config.js; then
+  printf "Nuxt must map its static directory to public/.\n" >&2
+  exit 1
+fi
 
-echo ""
-echo "📚 Documentation:"
-ls -1 README.md QUICK_START.md SETUP.md PROJECT_STRUCTURE.md STRUCTURE_CLEANUP.md STRUCTURE_TREE.md 2>/dev/null | sed 's/^/  ✓ /'
-
-echo ""
-echo "✅ Structure is complete and organized!"
+printf 'Project structure is valid for this Nuxt 2 setup.\n'

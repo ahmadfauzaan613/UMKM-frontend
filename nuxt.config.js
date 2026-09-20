@@ -1,4 +1,13 @@
+const apiBaseUrl = process.env.API_BASE_URL || 'https://api-umkm.oj3nglab.xyz'
+
 export default {
+  srcDir: 'app/',
+
+  // Keep public/ at the project root while Nuxt 2 serves its custom static dir.
+  dir: {
+    static: '../public',
+  },
+
   generate: {
     fallback: true,
   },
@@ -12,17 +21,25 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'theme-color', content: '#24145f' },
       {
         hid: 'description',
         name: 'description',
         content: 'Platform investasi untuk UMKM Indonesia',
       },
+      { hid: 'og:title', property: 'og:title', content: 'Investasi UMKM' },
+      {
+        hid: 'og:description',
+        property: 'og:description',
+        content: 'Temukan dan dukung usaha lokal Indonesia melalui Investasi UMKM.',
+      },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/money-bag.svg' },
+      { rel: 'icon', type: 'image/svg+xml', href: '/money-bag.svg' },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap',
       },
     ],
   },
@@ -37,11 +54,6 @@ export default {
 
   components: true,
 
-  alias: {
-    '@': '<srcDir>',
-    '~': '<srcDir>',
-  },
-
   buildModules: [
     '@nuxtjs/tailwindcss',
   ],
@@ -52,11 +64,11 @@ export default {
   ],
 
   publicRuntimeConfig: {
-    apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:8080',
+    apiBaseUrl,
   },
 
   axios: {
-    baseURL: process.env.API_BASE_URL || 'http://localhost:8080',
+    baseURL: apiBaseUrl,
   },
 
   auth: {
